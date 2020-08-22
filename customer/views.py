@@ -8,38 +8,20 @@ from rest_framework import status
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+
+from customer.serializers import CustomerSerializer
 from .models import  Customer
 from . import serializers
 from . import models
 
 
 # Create your views here.
-# class CustomerViewSet(viewsets.ModelViewSet):
-#     serializer_class = serializers.CustomerSerializer
-#     def get_queryset(self):
-#         return Customer.objects.filter(customer=self.kwargs['customer_id'])
 
-class CustomerView(RetrieveAPIView):
-    # serializer_class=serializers.CustomerSerializer
-    # permission_classes = (IsAuthenticated,)
-    # authentication_classes = JSONWebTokenAuthentication
-    #
-    # def patch(self,request):
-    #     serializer=self.serializer_class(data=request.user)
-    #     serializer.is_valid(raise_exception=True)
-    #     user=serializer.save()
-    #     response={
-    #         "msg":"OK",
-    #         'status code': status.HTTP_200_OK,
-    #     }
-    #     status_code=status.HTTP_200_OK
-    #     return Response(response,status=status_code)
-
+class CustomerView(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_class = JSONWebTokenAuthentication
     def get(self,request):
-        # serializer = self.serializer_class(data=request.data)
-        # return Response(serializer)
         try:
-
             customer_profile=Customer.objects.get(mobile=request.user)
             status_code=status.HTTP_200_OK
             response = {
@@ -55,8 +37,18 @@ class CustomerView(RetrieveAPIView):
                 }
 
         return Response(response, status=status_code)
+    def patch(self,request):
+        customer_profile=Customer.objects.get(mobile=request.user)
+        serializer=CustomerSerializer(customer_profile,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            response={
+                "msg":"OK"
+            }
+            status_code=status.HTTP_200_OK
+            return Response(response,status=status_code)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        
 
 
 class LogInView(APIView):

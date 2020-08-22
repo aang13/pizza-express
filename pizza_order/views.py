@@ -12,12 +12,9 @@ from rest_framework import status
 
 
 # Create your views here.
-# class PizzaViewSet(viewsets.ModelViewSet):
-#     serializer_class = serializers.PizzaSerializer
-#     queryset = Pizza.objects.all()
-#     permission_classes = (AllowAny,)
 
 class PizzaList(APIView):
+    permission_classes = (AllowAny,)
     def get(self,request,format=None):
         pizzas=Pizza.objects.all()
         serializer=PizzaSerializer(pizzas,many=True)
@@ -25,7 +22,7 @@ class PizzaList(APIView):
 
 
 class PizzaDetail(APIView):
-
+    permission_classes = (AllowAny,)
     def get_object(self,pk):
         try:
             return Pizza.objects.get(pk=pk)
@@ -38,14 +35,10 @@ class PizzaDetail(APIView):
         return Response(serializer.data)
 
 
-# class OrderViewSet(viewsets.ModelViewSet):
-#     serializer_class = serializers.OrderSerializer
-#     queryset = Order.objects.all()
-#     permission_classes = (IsAuthenticated,)
-#     authentication_classes = JSONWebTokenAuthentication
-
 
 class OrderList(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_class = JSONWebTokenAuthentication
     def get(self,request,format=None):
         orders=Order.objects.all()
         serializer=OrderSerializer(orders,many=True)
@@ -55,11 +48,16 @@ class OrderList(APIView):
         serializer=OrderSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
+            response={
+                "msg":"OK"
+            }
+            return Response(response,status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class OrderDetail(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_class = JSONWebTokenAuthentication
 
     def get_object(self,pk):
         try:

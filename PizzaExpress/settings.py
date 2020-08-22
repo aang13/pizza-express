@@ -140,7 +140,6 @@ REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': (
     #  'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     #  ),
-    # "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
 
 JWT_AUTH = {

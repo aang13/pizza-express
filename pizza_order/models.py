@@ -13,7 +13,8 @@ ORDER_STATUS=(
 # Create your models here.
 class Tag(models.Model):
     name=models.CharField(max_length=255)
-
+    def __str__(self):
+        return self.name
 
 class Pizza(models.Model):
     name=models.CharField(max_length=255)
@@ -23,6 +24,9 @@ class Pizza(models.Model):
     weight=models.DecimalField(max_digits=16,decimal_places=6)
     image=models.ImageField(max_length=255)
     tags=models.ForeignKey(Tag,null=True,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class Order(models.Model):
@@ -36,4 +40,4 @@ class Order(models.Model):
     delivery_time=models.DateTimeField(blank=True,null=True)
 
     def __str__(self):
-        return self
+        return self.customer.mobile
